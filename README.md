@@ -6,7 +6,7 @@ Web上でリソース管理からプロセス操作、ファイル編集まで�
 
 ## 🚀導入方法
 
-#### ※事前に[amd-smi](https://github.com/ROCm/amdsmi)と[rocminfo]（https://github.com/ROCm/rocminfo）がインストールされている必要があります。
+#### ※事前に[amd-smi](https://github.com/ROCm/amdsmi)と[rocminfo](https://github.com/ROCm/rocminfo)がインストールされている必要があります。
 #### 現在Debian 13で上記ライブラリをインストールした環境でのみ動作確認済みです。
 #### 複数GPUでの挙動については動作未確認ですがおそらく非対応です。
 
