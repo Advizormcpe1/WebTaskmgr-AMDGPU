@@ -1543,13 +1543,13 @@ function loadavg_info(): array
 function gpu_info(): array
 {
   $g = [];
-  $nvsmi = which("nvidia-smi");
+  $nvsmi = which("amd-smi");
   if ($nvsmi) {
     $out = [];
     $rc = 0;
     @exec(
-      $nvsmi .
-        " --query-gpu=index,name,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits",
+      'echo ' .
+        "$(". $nvsmi ." static --csv | sed -n '2p' | cut -d',' -f1,2),$(". $nvsmi . " metric --csv | sed -n '2p' | rev | cut -d',' -f7,8,9,15 | rev)",
       $out,
       $rc
     );
@@ -1558,7 +1558,7 @@ function gpu_info(): array
         $parts = array_map("trim", explode(",", $ln));
         if (count($parts) >= 5) {
           $g[] = [
-            "vendor" => "nvidia",
+            "vendor" => "AMD",
             "index" => (int) $parts[0],
             "name" => $parts[1],
             "util_percent" => (int) $parts[2],
@@ -1626,13 +1626,13 @@ function static_info(): array
     }
   }
 
-  // GPUはnvidia-smiから取得(入って無ければ諦める。NVIDIA以外のGPU？いやそんなものはGPUではありませんので)
+  // ROCMINFO が必須です。
   $gpu_list = [];
-  $nvsmi = which("nvidia-smi");
+  $nvsmi = which("rocminfo");
   if ($nvsmi) {
     $out = [];
     $rc = 0;
-    @exec($nvsmi . " --query-gpu=name --format=csv,noheader", $out, $rc);
+    @exec($nvsmi . " | grep 'Marketing Name' | grep -v '@' | grep -v 'CPU' | head -n 1 | sed 's/.*Marketing Name:\s*//'", $out, $rc);
     foreach ($out as $nm) {
       $nm = trim($nm);
       if ($nm !== "") {
