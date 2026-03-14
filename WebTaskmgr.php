@@ -1549,7 +1549,7 @@ function gpu_info(): array
     $rc = 0;
     @exec(
       'echo ' .
-        "$(". $nvsmi ." static --csv | sed -n '2p' | cut -d',' -f1),$(rocminfo | grep 'Marketing Name' | grep -v '@' | grep -v 'CPU' | head -n 1 | sed 's/.*Marketing Name:\s*//'),$(". $nvsmi . "  metric --csv | sed -n '2p' | rev | cut -d',' -f15,9,8 | rev | awk -F',' '".'BEGIN{OFS=","'."} {print $1, $3, $2}')",
+        "$(". $nvsmi ." static --csv | sed -n '2p' | cut -d',' -f1),$(rocminfo | sed -n '/Device Type: *CPU/,$p' | grep 'Marketing Name' | head -n 1 | sed 's/.*Marketing Name:\s*//'),$(". $nvsmi . "  metric --csv | sed -n '2p' | rev | cut -d',' -f15,9,8 | rev | awk -F',' '".'BEGIN{OFS=","'."} {print $1, $3, $2}')",
       $out,
       $rc
     );
